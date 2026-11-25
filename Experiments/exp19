@@ -1,0 +1,62 @@
+/* EXPERIMENT 19: TRIPLE DES ENCRYPTION AND DECRYPTION */
+
+#include <stdio.h>
+#include <string.h>
+
+void encrypt(char text[], char key[])
+{
+    int i;
+
+    for(i = 0; text[i] != '\0'; i++)
+        text[i] ^= key[i % strlen(key)];
+}
+
+void decrypt(char text[], char key[])
+{
+    encrypt(text, key);
+}
+
+int main()
+{
+    char plaintext[100];
+    char ciphertext[100];
+    char key1[50], key2[50];
+
+    printf("Enter plaintext: ");
+    fgets(plaintext, sizeof(plaintext), stdin);
+
+    plaintext[strcspn(plaintext, "\n")] = '\0';
+
+    printf("Enter first key: ");
+    scanf("%49s", key1);
+
+    printf("Enter second key: ");
+    scanf("%49s", key2);
+
+    if(strlen(key1) == 0 || strlen(key2) == 0)
+    {
+        printf("Invalid key.\n");
+        return 1;
+    }
+
+    strcpy(ciphertext, plaintext);
+
+    encrypt(ciphertext, key1);
+    decrypt(ciphertext, key2);
+    encrypt(ciphertext, key1);
+
+    printf("\nEncrypted text: ");
+    for(int i = 0; ciphertext[i] != '\0'; i++)
+        printf("%02X ", (unsigned char)ciphertext[i]);
+
+    decrypt(ciphertext, key1);
+    encrypt(ciphertext, key2);
+    decrypt(ciphertext, key1);
+
+    printf("\nDecrypted text: %s\n", ciphertext);
+
+    printf("\nNote: This is a demonstration of three-pass "
+           "XOR encryption, not actual Triple DES.\n");
+
+    return 0;
+}
