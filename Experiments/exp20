@@ -1,0 +1,41 @@
+/* EXPERIMENT 20: ERROR PROPAGATION IN ECB AND CBC MODES */
+
+#include <stdio.h>
+
+int main()
+{
+    int i;
+    int plaintext[8] = {1, 0, 1, 1, 0, 1, 0, 0};
+    int ciphertext[8] = {1, 1, 0, 0, 1, 0, 1, 0};
+    int modified[8];
+
+    printf("Original Ciphertext:\n");
+
+    for(i = 0; i < 8; i++)
+        printf("%d", ciphertext[i]);
+
+    printf("\n\nIntroducing an error in bit 3...\n");
+
+    for(i = 0; i < 8; i++)
+        modified[i] = ciphertext[i];
+
+    modified[2] = modified[2] ^ 1;
+
+    printf("\nModified Ciphertext:\n");
+
+    for(i = 0; i < 8; i++)
+        printf("%d", modified[i]);
+
+    printf("\n\nECB Mode:\n");
+    printf("Only the corresponding plaintext block is affected.\n");
+
+    printf("\nCBC Mode:\n");
+    printf("The corresponding plaintext block is affected.\n");
+    printf("The same bit position in the next plaintext block is flipped.\n");
+
+    printf("\nConclusion:\n");
+    printf("ECB errors affect one block, while CBC errors affect\n");
+    printf("the current and next plaintext blocks.\n");
+
+    return 0;
+}
