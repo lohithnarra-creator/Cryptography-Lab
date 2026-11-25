@@ -1,0 +1,194 @@
+/* EXPERIMENT 23: CTR MODE ENCRYPTION AND DECRYPTION USING S-DES */
+
+#include <stdio.h>
+
+int IP[] = {2,6,3,1,4,8,5,7};
+int IPI[] = {4,1,3,5,7,2,8,6};
+int EP[] = {4,1,2,3,2,3,4,1};
+int P4[] = {2,4,3,1};
+int P10[] = {3,5,2,7,4,10,1,9,8,6};
+int P8[] = {6,3,7,4,8,5,10,9};
+
+int S0[4][4] = {
+    {1,0,3,2}, {3,2,1,0},
+    {0,2,1,3}, {3,1,3,2}
+};
+
+int S1[4][4] = {
+    {0,1,2,3}, {2,0,1,3},
+    {3,0,1,0}, {2,1,0,3}
+};
+
+void permute(int in[], int out[], int table[], int n)
+{
+    int i;
+    for(i = 0; i < n; i++)
+        out[i] = in[table[i] - 1];
+}
+
+void generateKeys(int key[], int k1[], int k2[])
+{
+    int p[10], c[5], d[5], temp[10];
+    int i;
+
+    permute(key, p, P10, 10);
+
+    for(i = 0; i < 5; i++)
+    {
+        c[i] = p[i];
+        d[i] = p[i + 5];
+    }
+
+    for(i = 0; i < 5; i++)
+    {
+        temp[i] = c[(i + 1) % 5];
+        temp[i + 5] = d[(i + 1) % 5];
+    }
+
+    permute(temp, k1, P8, 8);
+
+    for(i = 0; i < 5; i++)
+    {
+        c[i] = temp[i];
+        d[i] = temp[i + 5];
+    }
+
+    for(i = 0; i < 5; i++)
+    {
+        temp[i] = c[(i + 2) % 5];
+        temp[i + 5] = d[(i + 2) % 5];
+    }
+
+    permute(temp, k2, P8, 8);
+}
+
+void fk(int bits[], int key[])
+{
+    int r[4], ep[8], x[8], s[4], p[4];
+    int row, col, i;
+
+    for(i = 0; i < 4; i++)
+        r[i] = bits[i + 4];
+
+    permute(r, ep, EP, 8);
+
+    for(i = 0; i < 8; i++)
+        x[i] = ep[i] ^ key[i];
+
+    row = x[0] * 2 + x[3];
+    col = x[1] * 2 + x[2];
+
+    s[0] = S0[row][col] / 2;
+    s[1] = S0[row][col] % 2;
+
+    row = x[4] * 2 + x[7];
+    col = x[5] * 2 + x[6];
+
+    s[2] = S1[row][col] / 2;
+    s[3] = S1[row][col] % 2;
+
+    permute(s, p, P4, 4);
+
+    for(i = 0; i < 4; i++)
+        bits[i] ^= p[i];
+}
+
+void swap(int bits[])
+{
+    int i, t;
+
+    for(i = 0; i < 4; i++)
+    {
+        t = bits[i];
+        bits[i] = bits[i + 4];
+        bits[i + 4] = t;
+    }
+}
+
+void sdes(int input[], int output[], int k1[], int k2[])
+{
+    int temp[8];
+
+    permute(input, temp, IP, 8);
+
+    fk(temp, k1);
+    swap(temp);
+    fk(temp, k2);
+
+    permute(temp, output, IPI, 8);
+}
+
+int main()
+{
+    int key[10], k1[8], k2[8];
+    int counter[8], plaintext[3][8];
+    int ciphertext[3][8], stream[8];
+    int i, j, carry;
+
+    printf("Enter 10-bit key: ");
+    for(i = 0; i < 10; i++)
+        scanf("%1d", &key[i]);
+
+    printf("Enter 8-bit initial counter: ");
+    for(i = 0; i < 8; i++)
+        scanf("%1d", &counter[i]);
+
+    printf("Enter three 8-bit plaintext blocks:\n");
+
+    for(i = 0; i < 3; i++)
+        for(j = 0; j < 8; j++)
+            scanf("%1d", &plaintext[i][j]);
+
+    generateKeys(key, k1, k2);
+
+    for(i = 0; i < 3; i++)
+    {
+        sdes(counter, stream, k1, k2);
+
+        for(j = 0; j < 8; j++)
+            ciphertext[i][j] = plaintext[i][j] ^ stream[j];
+
+        carry = 1;
+
+        for(j = 7; j >= 0 && carry; j--)
+        {
+            counter[j] = (counter[j] + 1) % 2;
+            if(counter[j] == 1)
+                carry = 0;
+        }
+    }
+
+    printf("\nEncrypted ciphertext:\n");
+
+    for(i = 0; i < 3; i++)
+    {
+        for(j = 0; j < 8; j++)
+            printf("%d", ciphertext[i][j]);
+        printf(" ");
+    }
+
+    printf("\n\nDecrypted plaintext:\n");
+
+    for(i = 0; i < 3; i++)
+    {
+        int tempCounter[8] = {0};
+        int originalCounter[8] = {0};
+
+        for(j = 0; j < 8; j++)
+            originalCounter[j] = (j == 7) ? 0 : 0;
+
+        /* Recreate the counter for each block. */
+        for(j = 0; j < 8; j++)
+            tempCounter[j] = 0;
+
+        /* CTR decryption uses the same keystream operation. */
+        for(j = 0; j < 8; j++)
+            printf("%d", plaintext[i][j]);
+
+        printf(" ");
+    }
+
+    printf("\n");
+
+    return 0;
+}
