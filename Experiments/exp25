@@ -1,0 +1,49 @@
+/* EXPERIMENT 25: RSA PLAINTEXT BLOCK COMMON FACTOR ATTACK */
+
+#include <stdio.h>
+
+int gcd(int a, int b)
+{
+    while(b != 0)
+    {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+
+    return a;
+}
+
+int main()
+{
+    int n, e, c, m, factor;
+
+    printf("Enter RSA modulus (n): ");
+    scanf("%d", &n);
+
+    printf("Enter public exponent (e): ");
+    scanf("%d", &e);
+
+    printf("Enter encrypted message (c): ");
+    scanf("%d", &c);
+
+    factor = gcd(c, n);
+
+    printf("\nGCD of ciphertext and modulus = %d\n", factor);
+
+    if(factor > 1 && factor < n)
+    {
+        printf("Common factor found: %d\n", factor);
+        printf("RSA modulus can be factored.\n");
+    }
+    else
+    {
+        printf("No common factor found.\n");
+        printf("This ciphertext does not reveal a factor of n.\n");
+    }
+
+    printf("\nRSA plaintext blocks should be checked for\n");
+    printf("common factors with the modulus before decryption.\n");
+
+    return 0;
+}
