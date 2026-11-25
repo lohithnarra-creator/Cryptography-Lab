@@ -1,0 +1,48 @@
+/* EXPERIMENT 21: PADDING USING ONE BIT FOLLOWED BY ZEROS */
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char data[100];
+    int length, blockSize = 8;
+    int padding, i;
+
+    printf("Enter the binary data: ");
+    scanf("%99s", data);
+
+    length = strlen(data);
+
+    for(i = 0; i < length; i++)
+    {
+        if(data[i] != '0' && data[i] != '1')
+        {
+            printf("Invalid binary input.\n");
+            return 1;
+        }
+    }
+
+    padding = blockSize - (length % blockSize);
+
+    printf("\nOriginal data: %s", data);
+    printf("\nOriginal length: %d bits", length);
+
+    printf("\n\nPadded data: ");
+    printf("%s", data);
+
+    printf("1");
+
+    for(i = 1; i < padding; i++)
+        printf("0");
+
+    printf("\nPadding bits added: %d", padding);
+
+    printf("\n\nReason for adding an extra block:");
+    printf("\nIf data is already block-aligned, a full padding");
+    printf("\nblock is added to identify the end of the data.");
+
+    printf("\n");
+
+    return 0;
+}
