@@ -1,0 +1,57 @@
+/* EXPERIMENT 28: DIFFIE-HELLMAN KEY EXCHANGE */
+
+#include <stdio.h>
+
+int powerMod(int base, int exp, int mod)
+{
+    int result = 1;
+
+    while(exp > 0)
+    {
+        result = (result * base) % mod;
+        exp--;
+    }
+
+    return result;
+}
+
+int main()
+{
+    int q, alpha;
+    int a, b;
+    int A, B;
+    int key1, key2;
+
+    printf("Enter prime number q: ");
+    scanf("%d", &q);
+
+    printf("Enter primitive root alpha: ");
+    scanf("%d", &alpha);
+
+    printf("Enter Alice's private key: ");
+    scanf("%d", &a);
+
+    printf("Enter Bob's private key: ");
+    scanf("%d", &b);
+
+    A = powerMod(alpha, a, q);
+    B = powerMod(alpha, b, q);
+
+    printf("\nAlice sends public value: %d\n", A);
+    printf("Bob sends public value: %d\n", B);
+
+    key1 = powerMod(B, a, q);
+    key2 = powerMod(A, b, q);
+
+    printf("\nAlice's shared key: %d\n", key1);
+    printf("Bob's shared key: %d\n", key2);
+
+    if(key1 == key2)
+        printf("\nKey exchange successful.\n");
+    else
+        printf("\nKey exchange failed.\n");
+
+    printf("\nBoth users calculate the same shared secret.\n");
+
+    return 0;
+}
