@@ -1,0 +1,53 @@
+/* EXPERIMENT 27: TEXTBOOK RSA PER-LETTER ENCRYPTION */
+
+#include <stdio.h>
+
+int powerMod(int base, int exp, int mod)
+{
+    int result = 1;
+
+    while(exp > 0)
+    {
+        result = (result * base) % mod;
+        exp--;
+    }
+
+    return result;
+}
+
+int main()
+{
+    int e, n, i;
+    char message[100];
+
+    printf("Enter public exponent (e): ");
+    scanf("%d", &e);
+
+    printf("Enter modulus (n): ");
+    scanf("%d", &n);
+
+    printf("Enter plaintext message: ");
+    scanf("%99s", message);
+
+    printf("\nEncrypted values:\n");
+
+    for(i = 0; message[i] != '\0'; i++)
+    {
+        int value = message[i] - 'A';
+
+        if(value < 0 || value > 25)
+        {
+            printf("\nUse uppercase letters A-Z only.\n");
+            return 1;
+        }
+
+        printf("%d ", powerMod(value, e, n));
+    }
+
+    printf("\n\nSecurity observation:\n");
+    printf("The same plaintext letter always produces the same\n");
+    printf("ciphertext value when the same RSA key is used.\n");
+    printf("Therefore, textbook RSA is not secure for messages.\n");
+
+    return 0;
+}
