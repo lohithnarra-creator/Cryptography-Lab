@@ -1,0 +1,40 @@
+/* EXPERIMENT 30: CBC-MAC ONE-BLOCK FORGERY DEMONSTRATION */
+
+#include <stdio.h>
+
+int main()
+{
+    int X[8], T[8], forged[8];
+    int i;
+
+    printf("Enter 8-bit message block X:\n");
+    for(i = 0; i < 8; i++)
+        scanf("%1d", &X[i]);
+
+    printf("Enter 8-bit MAC tag T:\n");
+    for(i = 0; i < 8; i++)
+        scanf("%1d", &T[i]);
+
+    printf("\nOriginal message X: ");
+    for(i = 0; i < 8; i++)
+        printf("%d", X[i]);
+
+    printf("\nOriginal MAC T: ");
+    for(i = 0; i < 8; i++)
+        printf("%d", T[i]);
+
+    printf("\n\nForged second block (X XOR T): ");
+
+    for(i = 0; i < 8; i++)
+    {
+        forged[i] = X[i] ^ T[i];
+        printf("%d", forged[i]);
+    }
+
+    printf("\n\nForged message: X || (X XOR T)\n");
+
+    printf("This demonstrates why basic CBC-MAC should not\n");
+    printf("be used directly with variable-length messages.\n");
+
+    return 0;
+}
