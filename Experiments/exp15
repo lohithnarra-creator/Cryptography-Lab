@@ -1,0 +1,65 @@
+/* EXPERIMENT 15: ADDITIVE CIPHER FREQUENCY ATTACK */
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char text[1000];
+    int freq[26] = {0};
+    int key, i, j, max, temp;
+    int order[26];
+
+    printf("Enter the encrypted text:\n");
+    fgets(text, sizeof(text), stdin);
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+            freq[tolower(text[i]) - 'a']++;
+    }
+
+    for(i = 0; i < 26; i++)
+        order[i] = i;
+
+    for(i = 0; i < 25; i++)
+    {
+        max = i;
+
+        for(j = i + 1; j < 26; j++)
+        {
+            if(freq[order[j]] > freq[order[max]])
+                max = j;
+        }
+
+        temp = order[i];
+        order[i] = order[max];
+        order[max] = temp;
+    }
+
+    printf("\nTop 10 possible decryptions:\n");
+
+    for(key = 0; key < 10; key++)
+    {
+        printf("\nKey %d: ", key);
+
+        for(i = 0; text[i] != '\0'; i++)
+        {
+            if(isalpha(text[i]))
+            {
+                char ch = tolower(text[i]);
+                char decrypted = (ch - 'a' - key + 26) % 26 + 'a';
+                printf("%c", isupper(text[i]) ?
+                       toupper(decrypted) : decrypted);
+            }
+            else
+            {
+                printf("%c", text[i]);
+            }
+        }
+    }
+
+    printf("\n");
+    return 0;
+}
