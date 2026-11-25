@@ -1,0 +1,36 @@
+/* EXPERIMENT 29: SHA-3 CAPACITY LANE ANALYSIS */
+
+#include <stdio.h>
+
+int main()
+{
+    int blockSize = 1024;
+    int capacity = 576;
+    int laneSize = 64;
+    int lanes = capacity / laneSize;
+    int i, count = 0;
+
+    printf("SHA-3 Capacity Analysis\n");
+    printf("-----------------------\n");
+
+    printf("Block size = %d bits\n", blockSize);
+    printf("Capacity = %d bits\n", capacity);
+    printf("Lane size = %d bits\n", laneSize);
+
+    printf("Number of capacity lanes = %d\n", lanes);
+
+    printf("\nCounting lanes:\n");
+
+    for(i = 1; i <= lanes; i++)
+    {
+        count++;
+        printf("Lane %d is non-zero\n", i);
+    }
+
+    printf("\nTotal non-zero lanes = %d\n", count);
+
+    printf("\nNote: This is a simple lane-count demonstration.\n");
+    printf("The actual SHA-3 permutation determines lane values.\n");
+
+    return 0;
+}
