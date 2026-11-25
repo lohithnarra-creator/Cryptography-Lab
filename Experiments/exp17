@@ -1,0 +1,42 @@
+/* EXPERIMENT 17: DES DECRYPTION KEY SCHEDULE IN REVERSE */
+
+#include <stdio.h>
+
+int main()
+{
+    int roundKeys[16][48];
+    int i, j;
+
+    printf("Enter the 16 DES round keys (48 bits each):\n");
+
+    for(i = 0; i < 16; i++)
+    {
+        printf("Round %d: ", i + 1);
+
+        for(j = 0; j < 48; j++)
+        {
+            scanf("%d", &roundKeys[i][j]);
+
+            if(roundKeys[i][j] != 0 &&
+               roundKeys[i][j] != 1)
+            {
+                printf("Invalid bit entered.\n");
+                return 1;
+            }
+        }
+    }
+
+    printf("\nDES Decryption Key Schedule:\n");
+
+    for(i = 15; i >= 0; i--)
+    {
+        printf("Round %d: ", 16 - i);
+
+        for(j = 0; j < 48; j++)
+            printf("%d", roundKeys[i][j]);
+
+        printf("\n");
+    }
+
+    return 0;
+}
