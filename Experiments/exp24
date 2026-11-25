@@ -1,0 +1,59 @@
+/* EXPERIMENT 24: RSA ALGORITHM - FIND PRIVATE KEY */
+
+#include <stdio.h>
+
+int gcd(int a, int b)
+{
+    while(b != 0)
+    {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int modInverse(int e, int phi)
+{
+    int d;
+
+    for(d = 1; d < phi; d++)
+    {
+        if((e * d) % phi == 1)
+            return d;
+    }
+
+    return -1;
+}
+
+int main()
+{
+    int p = 59;
+    int q = 61;
+    int n = p * q;
+    int phi = (p - 1) * (q - 1);
+    int e = 31;
+    int d;
+
+    printf("RSA Public Key: (e, n) = (%d, %d)\n", e, n);
+
+    d = modInverse(e, phi);
+
+    if(d == -1)
+    {
+        printf("Private key cannot be found.\n");
+        return 1;
+    }
+
+    printf("p = %d\n", p);
+    printf("q = %d\n", q);
+    printf("n = %d\n", n);
+    printf("Euler's Totient = %d\n", phi);
+
+    printf("Private Key (d, n) = (%d, %d)\n", d, n);
+
+    printf("\nVerification: (e * d) mod phi = %d\n",
+           (e * d) % phi);
+
+    return 0;
+}
