@@ -1,0 +1,46 @@
+#include <stdio.h>
+
+int main()
+{
+    int p1, p2, c1, c2;
+    int a, b, c, d, det, inv;
+
+    printf("Enter two plaintext numbers (0-25): ");
+    scanf("%d %d", &p1, &p2);
+
+    printf("Enter four ciphertext numbers (0-25): ");
+    scanf("%d %d %d %d", &a, &b, &c, &d);
+
+    det = (a * d - b * c) % 26;
+    if(det < 0)
+        det += 26;
+
+    for(inv = 1; inv < 26; inv++)
+        if((det * inv) % 26 == 1)
+            break;
+
+    if(inv == 26)
+    {
+        printf("Key matrix cannot be found.\n");
+        return 0;
+    }
+
+    int k1 = (d * inv) % 26;
+    int k2 = (-b * inv) % 26;
+    int k3 = (-c * inv) % 26;
+    int k4 = (a * inv) % 26;
+
+    if(k2 < 0) k2 += 26;
+    if(k3 < 0) k3 += 26;
+
+    c1 = (k1 * p1 + k2 * p2) % 26;
+    c2 = (k3 * p1 + k4 * p2) % 26;
+
+    printf("Recovered key matrix:\n");
+    printf("%d %d\n", k1, k2);
+    printf("%d %d\n", k3, k4);
+
+    printf("Ciphertext: %d %d\n", c1, c2);
+
+    return 0;
+}
