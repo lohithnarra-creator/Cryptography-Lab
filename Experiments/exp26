@@ -1,0 +1,66 @@
+/* EXPERIMENT 26: GENERATING A NEW RSA KEY PAIR */
+
+#include <stdio.h>
+
+int gcd(int a, int b)
+{
+    while(b != 0)
+    {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int modInverse(int e, int phi)
+{
+    int d;
+
+    for(d = 1; d < phi; d++)
+    {
+        if((e * d) % phi == 1)
+            return d;
+    }
+
+    return -1;
+}
+
+int main()
+{
+    int p = 61, q = 53;
+    int n = p * q;
+    int phi = (p - 1) * (q - 1);
+    int e, d;
+
+    printf("RSA Key Generation\n");
+    printf("p = %d\n", p);
+    printf("q = %d\n", q);
+    printf("n = %d\n", n);
+    printf("Phi(n) = %d\n", phi);
+
+    printf("\nEnter new public exponent e: ");
+    scanf("%d", &e);
+
+    if(e <= 1 || e >= phi || gcd(e, phi) != 1)
+    {
+        printf("Invalid public exponent.\n");
+        return 1;
+    }
+
+    d = modInverse(e, phi);
+
+    if(d == -1)
+    {
+        printf("Private key cannot be generated.\n");
+        return 1;
+    }
+
+    printf("\nNew Public Key: (%d, %d)\n", e, n);
+    printf("New Private Key: (%d, %d)\n", d, n);
+
+    printf("\nNote: Changing e and d does not make the key secure\n");
+    printf("if the same RSA modulus n is retained.\n");
+
+    return 0;
+}
