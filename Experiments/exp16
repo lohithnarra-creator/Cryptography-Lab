@@ -1,0 +1,78 @@
+/* EXPERIMENT 16: MONOALPHABETIC SUBSTITUTION CIPHER
+   FREQUENCY ANALYSIS */
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char text[1000];
+    char alphabet[] = "etaoinshrdlcumwfgypbvkjxqz";
+    int freq[26] = {0};
+    int order[26];
+    int i, j, max, temp;
+
+    printf("Enter the encrypted text:\n");
+    fgets(text, sizeof(text), stdin);
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+            freq[tolower(text[i]) - 'a']++;
+    }
+
+    for(i = 0; i < 26; i++)
+        order[i] = i;
+
+    for(i = 0; i < 25; i++)
+    {
+        max = i;
+
+        for(j = i + 1; j < 26; j++)
+        {
+            if(freq[order[j]] > freq[order[max]])
+                max = j;
+        }
+
+        temp = order[i];
+        order[i] = order[max];
+        order[max] = temp;
+    }
+
+    printf("\nFrequency-based letter mapping:\n");
+
+    for(i = 0; i < 26; i++)
+    {
+        printf("%c -> %c\n", order[i] + 'a', alphabet[i]);
+    }
+
+    printf("\nPossible decrypted text:\n");
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+        {
+            char ch = tolower(text[i]);
+            char decrypted = alphabet[0];
+
+            for(j = 0; j < 26; j++)
+            {
+                if(order[j] == ch - 'a')
+                {
+                    decrypted = alphabet[j];
+                    break;
+                }
+            }
+
+            printf("%c", isupper(text[i]) ?
+                   toupper(decrypted) : decrypted);
+        }
+        else
+        {
+            printf("%c", text[i]);
+        }
+    }
+
+    return 0;
+}
