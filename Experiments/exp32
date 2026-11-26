@@ -1,0 +1,49 @@
+/* EXPERIMENT 32: DSA SIGNATURE AND RSA SIGNATURE COMPARISON */
+
+#include <stdio.h>
+
+int main()
+{
+    int k1, k2;
+    int g = 5, p = 23;
+    int r1, r2;
+
+    printf("DSA Signature Demonstration\n");
+
+    printf("Enter first random value k: ");
+    scanf("%d", &k1);
+
+    printf("Enter second random value k: ");
+    scanf("%d", &k2);
+
+    if(k1 <= 0 || k2 <= 0)
+    {
+        printf("Invalid random values.\n");
+        return 1;
+    }
+
+    r1 = 1;
+    r2 = 1;
+
+    for(int i = 0; i < k1; i++)
+        r1 = (r1 * g) % p;
+
+    for(int i = 0; i < k2; i++)
+        r2 = (r2 * g) % p;
+
+    printf("\nFirst DSA random value result: %d\n", r1);
+    printf("Second DSA random value result: %d\n", r2);
+
+    if(k1 != k2)
+        printf("\nDifferent random values produce different results.\n");
+    else
+        printf("\nSame random value was entered.\n");
+
+    printf("\nDSA requires a fresh, secret random value for every signature.\n");
+    printf("Reusing or revealing this value can expose the private key.\n");
+
+    printf("\nRSA signatures are deterministic only when using\n");
+    printf("deterministic encoding; secure RSA-PSS uses randomness.\n");
+
+    return 0;
+}
