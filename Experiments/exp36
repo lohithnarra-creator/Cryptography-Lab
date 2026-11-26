@@ -1,0 +1,52 @@
+/* EXPERIMENT 36: AFFINE CIPHER (ONE-TO-ONE MAPPING) */
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char text[100];
+    int a = 5, b = 8;
+    int i, encrypted, decrypted;
+
+    printf("Enter plaintext: ");
+    fgets(text, sizeof(text), stdin);
+
+    printf("\nEncrypted text: ");
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+        {
+            int p = tolower(text[i]) - 'a';
+            encrypted = (a * p + b) % 26;
+            printf("%c", encrypted + 'a');
+        }
+        else
+        {
+            printf("%c", text[i]);
+        }
+    }
+
+    printf("\nDecrypted text: ");
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+        {
+            int p = tolower(text[i]) - 'a';
+            encrypted = (a * p + b) % 26;
+
+            decrypted = 21 * (encrypted - b + 26) % 26;
+
+            printf("%c", decrypted + 'a');
+        }
+        else
+        {
+            printf("%c", text[i]);
+        }
+    }
+
+    return 0;
+}
