@@ -1,0 +1,55 @@
+/* EXPERIMENT 39: ADDITIVE CIPHER FREQUENCY ANALYSIS */
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char text[1000];
+    int freq[26] = {0};
+    int i, j, key, count;
+
+    printf("Enter ciphertext: ");
+    fgets(text, sizeof(text), stdin);
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+            freq[tolower(text[i]) - 'a']++;
+    }
+
+    printf("\nLetter Frequencies:\n");
+
+    for(i = 0; i < 26; i++)
+        printf("%c : %d\n", 'a' + i, freq[i]);
+
+    printf("\nTop 10 Possible Decryptions:\n");
+
+    for(key = 0; key < 10; key++)
+    {
+        printf("\nKey %d: ", key);
+
+        for(j = 0; text[j] != '\0'; j++)
+        {
+            if(isalpha(text[j]))
+            {
+                count = tolower(text[j]) - 'a';
+                count = (count - key + 26) % 26;
+
+                if(isupper(text[j]))
+                    printf("%c", count + 'A');
+                else
+                    printf("%c", count + 'a');
+            }
+            else
+            {
+                printf("%c", text[j]);
+            }
+        }
+    }
+
+    printf("\n");
+
+    return 0;
+}
