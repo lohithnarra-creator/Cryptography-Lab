@@ -1,0 +1,78 @@
+/* EXPERIMENT 40: MONOALPHABETIC CIPHER FREQUENCY ANALYSIS */
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char text[1000];
+    char english[] = "etaoinshrdlcumwfgypbvkjxqz";
+    int freq[26] = {0};
+    int order[26];
+    int i, j, temp, rank;
+
+    printf("Enter ciphertext: ");
+    fgets(text, sizeof(text), stdin);
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+            freq[tolower(text[i]) - 'a']++;
+    }
+
+    for(i = 0; i < 26; i++)
+        order[i] = i;
+
+    for(i = 0; i < 25; i++)
+    {
+        for(j = i + 1; j < 26; j++)
+        {
+            if(freq[order[j]] > freq[order[i]])
+            {
+                temp = order[i];
+                order[i] = order[j];
+                order[j] = temp;
+            }
+        }
+    }
+
+    printf("\nLetter Frequencies:\n");
+
+    for(i = 0; i < 26; i++)
+        printf("%c : %d\n", 'a' + i, freq[i]);
+
+    printf("\nFrequency Mapping:\n");
+
+    for(i = 0; i < 26; i++)
+        printf("%c -> %c\n", 'a' + order[i], english[i]);
+
+    printf("\nEstimated Plaintext:\n");
+
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+        {
+            int ch = tolower(text[i]) - 'a';
+
+            for(rank = 0; rank < 26; rank++)
+            {
+                if(order[rank] == ch)
+                    break;
+            }
+
+            if(isupper(text[i]))
+                printf("%c", toupper(english[rank]));
+            else
+                printf("%c", english[rank]);
+        }
+        else
+        {
+            printf("%c", text[i]);
+        }
+    }
+
+    printf("\n");
+
+    return 0;
+}
